@@ -15,12 +15,12 @@ const Header = () => {
   };
 
   return (
-    <div className="bg-white py-4 px-2 rounded-sm">
+    <div className="flex bg-white py-2 px-2 rounded-md w-full">
       {/* SIDEBAR BUTTON */}
       {/* HEADER */}
-      <header className="flex gap-6 flex-col justify-between sm:flex-row">
+      <header className="flex gap-6 flex-col justify-between sm:flex-row w-full">
         <div className="flex gap-2 items-center justify-between">
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center ">
             <CiSearch fontSize={18} />
             <input
               className="focus:outline-none bg-transparent placeholder:text-xs"
@@ -53,13 +53,6 @@ const Header = () => {
             <li className="relative p-1 cursor-pointer ">
               <NotificationBadge classes="absolute top-[5px] right-[5px]" />
               <FaRegBell fontSize={16} className="text-neutral-600" />
-            </li>
-            <li className="p-1 cursor-pointer ">
-              <img
-                className="max-w-8"
-                src="src/assets/images/9440461 1.png"
-                alt=""
-              />
             </li>
           </ul>
         </div>
