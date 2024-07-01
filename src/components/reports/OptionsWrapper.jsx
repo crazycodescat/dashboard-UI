@@ -14,7 +14,7 @@ const OptionsWrapper = ({ children, wrapperName }) => {
           <h2 className="text-lg font-semibold uppercase w-fit">
             {wrapperName}
           </h2>
-          <div
+          <div 
             className="flex items-center justify-center bg-primary05 p-1 cursor-pointer"
             onClick={optionsToggler}
           >

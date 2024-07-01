@@ -7,9 +7,12 @@ import OptionsWrapper from '../../components/reports/OptionsWrapper';
 import FiltersContent from '../../components/reports/FiltersContent';
 import DataTable from '../../components/DataTable';
 import useReportsMapper from '../../hooks/useReportsMapper';
+import Chips from '../../components/Chips';
+import DataTableToDownload from '../../components/DataTableToDownload';
 
 // HOOKS
 import useFetch from '../../hooks/useFetch';
+import { useReportContext } from '../../hooks/useReportContext';
 
 const filterItems = [
   {
@@ -106,6 +109,31 @@ const columns = [
   { accessor: 'tax_included_price', header: 'Tax Included Price' },
 ];
 
+// const filterChips = ['India', 'India', 'India', 'India', 'India', 'India'];
+
+const data = [
+  {
+    id: 1,
+    name: 'taiyyab',
+    age: 22,
+  },
+  {
+    id: 2,
+    name: 'taiyyab',
+    age: 22,
+  },
+  {
+    id: 3,
+    name: 'taiyyab',
+    age: 22,
+  },
+  {
+    id: 4,
+    name: 'taiyyab',
+    age: 22,
+  },
+];
+
 const Reports = () => {
   const {
     itemsSaleReportDataMapper,
@@ -114,10 +142,16 @@ const Reports = () => {
     purchaseForecastReportDataMapper,
   } = useReportsMapper();
   const [activeHeader, setActiveHeader] = useState(false);
+  const [filterChips, setFilterChips] = useState([
+    'India',
+    'India',
+    'India',
+    'India',
+    'India',
+    'India',
+  ]);
   const { fetch } = useFetch();
   const { reportsParams } = useParams();
-  const tableData = [];
-  const product_ids = [];
 
   useEffect(() => {
     const loadData = async () => {
@@ -126,28 +160,8 @@ const Reports = () => {
         method: 'get',
       });
 
-      const sell_lines = data[0].sell_lines;
-      sell_lines.forEach((sell_line) => {
-        product_ids.push(sell_line.product_id);
-      });
-
-      console.log(sell_lines);
-
-      const productData = await fetch({
-        url: 'http://localhost:3001/data',
-        method: 'get',
-      });
-
-      console.log(productData);
-      console.log(product_ids);
-
-      sell_lines.map((sell_line) => {
-        console.log(sell_line);
-        product_ids.find(() => {});
-      });
-
       if (reportsParams === import.meta.env.VITE_REPORT_ITEM_SALE) {
-        itemsSaleReportDataMapper(...data);
+        itemsSaleReportDataMapper(data);
       } else if (reportsParams === import.meta.env.VITE_REPORT_INVENTORY) {
         inventoryReportDataMapper(...data);
       } else if (
@@ -161,24 +175,18 @@ const Reports = () => {
       }
     };
     loadData();
+  }, [fetch, reportsParams]);
 
-    // const handleOutsideClick = (event) => {
-    //   if(event.target.closest('.close'))
-    // };
+  const deleteAllChips = () => {
+    setFilterChips([]);
+  };
 
-    // document.addEventListener('mousedown', handleOutsideClick);
-    // return () => {
-    //   document.removeEventListener('mousedown', handleOutsideClick);
-    // };
-  }, [
-    fetch,
-    reportsParams,
-    itemsSaleReportDataMapper,
-    inventoryReportDataMapper,
-    purchaseForecastReportDataMapper,
-    dailySaleReportDataMapper,
-    product_ids,
-  ]);
+  const removeChipsHandler = (index) => {
+    const filteredChips = filterChips.filter((chip, i) => {
+      return i !== index;
+    });
+    setFilterChips(filteredChips);
+  };
 
   const activeHeaderHandler = (i) => {
     setActiveHeader(i);
@@ -186,7 +194,7 @@ const Reports = () => {
   return (
     <>
       <div className="flex flex-col gap-8">
-        <div className="text-3xl font-bold">ITEMS SALE</div>
+        <div className="text-3xl font-bold mt-12">ITEMS SALE</div>
         <FormatOutputs />
         <OptionsWrapper wrapperName="filters">
           <div className="grid grid-cols-4 gap-2 max-w-[1000px]">
@@ -227,8 +235,27 @@ const Reports = () => {
               );
             })}
           </div>
+          <div className="grid grid-cols-chips  gap-2  justify-items-start">
+            {filterChips.map((chip, idx) => (
+              <Chips
+                key={idx}
+                activeFilterName={chip}
+                index={idx}
+                removeChipsHandler={removeChipsHandler}
+              />
+            ))}
+            {!filterChips.length <= 0 && (
+              <button
+                onClick={deleteAllChips}
+                className="p-2 underline text-xs font-normal"
+              >
+                Clear All
+              </button>
+            )}
+          </div>
         </OptionsWrapper>
         <DataTable columns={columns} data={employees}></DataTable>
+        <DataTableToDownload data={data} />
       </div>
     </>
   );

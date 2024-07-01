@@ -23,6 +23,11 @@ export default {
         candlePurple: '#696bff',
         filtersHeader: '#1A1B28',
       },
+      gridTemplateColumns: {
+        4: 'repeat(4, minmax(100px, 1fr))',
+        chips: 'repeat(auto-fill, minmax(70px, 1fr))',
+        footer: '200px minmax(900px, 1fr) 100px',
+      },
     },
   },
   plugins: [],

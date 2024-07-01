@@ -121,14 +121,34 @@
 // find minimum number in array
 
 function findMinElementOfArray(arr) {
-  let minimumNumber;
+  let minimumNumber = arr[0];
+  // let indexOfMinimum;
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i] < arr[i + 1]) {
+    if (arr[i] < minimumNumber) {
       minimumNumber = arr[i];
     }
   }
   return minimumNumber;
 }
 
-const minimumNumber = findMinElementOfArray([1, 2, 3, 53, 0]);
+const minimumNumber = findMinElementOfArray([
+  100, 2, 3, 53, 341, 1, 0, 0, 2, -0.1,
+]);
+
 console.log(minimumNumber);
+
+// find min number using recursion
+const arr = [23, 12, 5, 23, 8, 9034, 12, 4, 1, 0];
+function findMinNumberUsingRecursion(arr, arrLength) {
+  let minNumber = arr[0];
+  if (arrLength <= 0) {
+    return minNumber;
+  }
+
+  if (minNumber < arr[arrLength - 1])
+    return findMinNumberUsingRecursion(arr, arrLength - 1);
+}
+
+const minNumber = findMinNumberUsingRecursion(arr, arr.length);
+
+console.log(minNumber);

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IoChevronBackSharp } from 'react-icons/io5';
 import { RiHomeSmileLine } from 'react-icons/ri';
@@ -9,6 +10,7 @@ import { GiArchiveRegister } from 'react-icons/gi';
 import SideBarChips from '../SideBarChips';
 
 const SideBar = () => {
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const chevronRight = <MdChevronRight />;
   const sideBarMenu = [
     {
@@ -89,21 +91,34 @@ const SideBar = () => {
     },
   ];
 
+  const sideBarToggler = () => {
+    setIsSideBarOpen((prev) => !prev);
+  };
+
   return (
-    <div className="text-white bg-primary05 p-3 max-w-[300px] h-screen rounded-md">
+    <div
+      className={`${
+        isSideBarOpen ? 'absolute -left-56' : ''
+      } text-white bg-primary05 p-3 max-w-[300px] h-screen rounded-md`}
+    >
       {/* SIDEBAR */}
       <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-center gap-2 relative w-52">
-          <p className="text-xl font-semibold">SNEAT</p>
+        <div className="flex flex-col justify-between items-center gap-4 relative w-52">
           <div className="p-1 cursor-pointer ">
             <img
               className="max-w-8"
-              src="src/assets/images/9440461 1.png"
-              alt=""
+              src="https://res.cloudinary.com/ddx7todbr/image/upload/v1719812979/dashboard-UI/qs94jf9sz9hnoffppvgz.png"
+              alt="Profile image"
             />
           </div>
-          <button className="cursor-pointer outline outline-4 outline-[#f6f5fa] w-4 h-4 rounded-full bg-purple-400 flex justify-center items-center absolute top-1 -right-5">
-            <IoChevronBackSharp className="text-white text-[14px] " />
+          <button className="text-sm font-semibold rounded-lg text-black bg-white px-2 py-1">
+            PROFILE
+          </button>
+          <button
+            onClick={sideBarToggler}
+            className="cursor-pointer w-6 h-6 rounded-full bg-white flex justify-center items-center absolute top-2 -right-5"
+          >
+            <IoChevronBackSharp className="text-black text-[14px] " />
           </button>
         </div>
         <Link to="/">

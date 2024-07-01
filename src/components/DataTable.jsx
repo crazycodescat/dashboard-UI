@@ -17,7 +17,6 @@ const DataTable = ({ columns, data }) => {
         </thead>
         <tbody>
           {data.map((row, rowIndex) => {
-            // console.log(row)
             return (
               <tr
                 key={rowIndex}
