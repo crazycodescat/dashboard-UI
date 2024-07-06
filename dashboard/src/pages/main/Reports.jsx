@@ -9,7 +9,7 @@ import FiltersContent from '../../components/reports/FiltersContent';
 import DataTable from '../../components/DataTable';
 import useReportsMapper from '../../hooks/useReportsMapper';
 import Chips from '../../components/Chips';
-// import DataTableToDownload from '../../components/DataTableToDownload';
+import DataTableToDownload from '../../components/DataTableToDownload';
 
 // HOOKS
 import useFetch from '../../hooks/useFetch';
@@ -94,20 +94,24 @@ const employees = [
 ];
 
 const columns = [
-  { accessor: 'image', header: 'Image' },
-  { accessor: 'stock', header: 'Stock' },
-  { accessor: 'price', header: 'Price' },
-  { accessor: 'size', header: 'Size' },
-  { accessor: 'sku', header: 'SKU' },
-  { accessor: 'total_sales', header: 'Total Sales' },
-  { accessor: 'design', header: 'Design' },
-  { accessor: 'sell_quantity', header: 'Sell Quantity' },
-  { accessor: 'sell_price', header: 'Sell Price' },
-  { accessor: 'subtotal', header: 'Subtotal' },
-  { accessor: 'sell_invoice_no', header: 'Sell Invoice No.' },
-  { accessor: 'unit_price', header: 'Unit Price' },
-  { accessor: 'tax', header: 'Tax' },
-  { accessor: 'tax_included_price', header: 'Tax Included Price' },
+  { accessor: 'image', header: 'Image', isTrue: true },
+  { accessor: 'stock', header: 'Stock', isTrue: true },
+  { accessor: 'price', header: 'Price', isTrue: true },
+  { accessor: 'size', header: 'Size', isTrue: true },
+  { accessor: 'sku', header: 'SKU', isTrue: true },
+  { accessor: 'total_sales', header: 'Total Sales', isTrue: true },
+  { accessor: 'design', header: 'Design', isTrue: true },
+  { accessor: 'sell_quantity', header: 'Sell Quantity', isTrue: true },
+  { accessor: 'sell_price', header: 'Sell Price', isTrue: true },
+  { accessor: 'subtotal', header: 'Subtotal', isTrue: true },
+  { accessor: 'sell_invoice_no', header: 'Sell Invoice No.', isTrue: true },
+  { accessor: 'unit_price', header: 'Unit Price', isTrue: true },
+  { accessor: 'tax', header: 'Tax', isTrue: true },
+  {
+    accessor: 'tax_included_price',
+    header: 'Tax Included Price',
+    isTrue: true,
+  },
 ];
 
 // const filterChips = ['India', 'India', 'India', 'India', 'India', 'India'];
@@ -197,7 +201,7 @@ const Reports = () => {
     <>
       <div className="flex flex-col gap-8">
         <div className="text-3xl font-bold mt-12">ITEMS SALE</div>
-        <FormatOutputs />
+        <FormatOutputs columns={columns} />
         <OptionsWrapper wrapperName="filters">
           <div className="grid grid-cols-4 gap-2 max-w-[1000px]">
             {filterItems.map((item, i) => {
@@ -257,7 +261,7 @@ const Reports = () => {
           </div>
         </OptionsWrapper>
         <DataTable columns={columns} data={employees}></DataTable>
-        {/* <DataTableToDownload data={data} /> */}
+        <DataTableToDownload data={data} />
       </div>
     </>
   );

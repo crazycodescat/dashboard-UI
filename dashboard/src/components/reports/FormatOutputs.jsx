@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import { useState, useRef } from 'react';
@@ -64,7 +65,7 @@ const mailData = [
   },
 ];
 
-const FormatOutputs = () => {
+const FormatOutputs = ({ columns }) => {
   const outputFormats = [
     {
       formatName: 'pdf',
@@ -108,11 +109,11 @@ const FormatOutputs = () => {
     setActiveButton(i);
   };
 
-  const columns = [
-    { title: 'ID', field: 'id' },
-    { title: 'Name', field: 'name' },
-    { title: 'Age', field: 'age' },
-  ];
+  // const columns = [
+  //   { title: 'ID', field: 'id' },
+  //   { title: 'Name', field: 'name' },
+  //   { title: 'Age', field: 'age' },
+  // ];
   const mailColumns = [
     { title: 'ID', field: 'id' },
     { title: 'Name', field: 'name' },
@@ -251,6 +252,7 @@ const FormatOutputs = () => {
       {isMailDialogOpen && (
         <Modal isOpen={isMailDialogOpen} onClose={closeModal}>
           <EmailDialogBox
+            columns={columns}
             emailError={emailError}
             setEmailError={setEmailError}
             emailSubmitHandler={emailSubmitHandler}
