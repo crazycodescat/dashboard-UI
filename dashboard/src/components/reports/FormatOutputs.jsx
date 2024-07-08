@@ -42,28 +42,6 @@ const data = [
     age: 22,
   },
 ];
-const mailData = [
-  {
-    id: 1,
-    name: 'taiyyab',
-    age: 22,
-  },
-  {
-    id: 2,
-    name: 'taiyyab',
-    age: 22,
-  },
-  {
-    id: 3,
-    name: 'taiyyab',
-    age: 22,
-  },
-  {
-    id: 4,
-    name: 'taiyyab',
-    age: 22,
-  },
-];
 
 const FormatOutputs = ({ columns }) => {
   const outputFormats = [
@@ -144,7 +122,7 @@ const FormatOutputs = ({ columns }) => {
   };
 
   const exportToJson = () => {
-    const jsonData = JSON.stringify(data, null, 2);
+    const jsonData = JSON.stringify(columns, null, 2);
     const blob = new Blob([jsonData], { type: 'application/json' });
     saveAs(blob, 'data.json');
   };

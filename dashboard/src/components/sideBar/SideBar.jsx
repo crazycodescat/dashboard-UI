@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { IoChevronBackSharp } from 'react-icons/io5';
 import { RiHomeSmileLine } from 'react-icons/ri';
 import { MdChevronRight } from 'react-icons/md';
-import { FaCartShopping } from 'react-icons/fa6';
 import { GiArchiveRegister } from 'react-icons/gi';
 import { MdDashboard } from 'react-icons/md';
 
@@ -14,25 +13,6 @@ const SideBar = () => {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const chevronRight = <MdChevronRight />;
   const sideBarMenu = [
-    {
-      leftIcon: <FaCartShopping />,
-      name: 'eCommerce',
-      rightIcon: chevronRight,
-      notificationBadge: false,
-      path: '/ecommerce',
-      subMenu: [
-        { subMenuName: 'item sale', path: '/reports/items-sale' },
-        { subMenuName: 'inventory', path: '/reports/inventory' },
-        {
-          subMenuName: 'purchase forecast',
-          path: '/reports/purchase-forecast',
-        },
-        {
-          subMenuName: 'daily sale',
-          path: '/reports/daily-sale',
-        },
-      ],
-    },
     {
       leftIcon: <GiArchiveRegister />,
       name: 'Reports',

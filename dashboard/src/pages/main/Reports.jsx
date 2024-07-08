@@ -14,8 +14,6 @@ import { getRequest } from '../../fetch/request';
 
 // HOOKS
 import useFetch from '../../hooks/useFetch';
-import axios from 'axios';
-// import { useReportContext } from '../../hooks/useReportContext';
 
 const filterItems = [
   {
@@ -92,7 +90,7 @@ const data2 = [];
 
 const columns = [
   { accessor: 'image_url', header: 'Image', isTrue: true },
-  { accessor: 'category', header: 'Category', isTrue: true },
+  { accessor: 'category.name', header: 'Category', isTrue: true },
   { accessor: 'stock', header: 'Stock', isTrue: true },
   { accessor: 'price', header: 'Price', isTrue: true },
   { accessor: 'size', header: 'Size', isTrue: true },
@@ -112,30 +110,31 @@ const columns = [
   },
 ];
 
-// const filterChips = ['India', 'India', 'India', 'India', 'India', 'India'];
-
-const data = [
-  {
-    id: 1,
-    name: 'taiyyab',
-    age: 22,
-  },
-  {
-    id: 2,
-    name: 'taiyyab',
-    age: 22,
-  },
-  {
-    id: 3,
-    name: 'taiyyab',
-    age: 22,
-  },
-  {
-    id: 4,
-    name: 'taiyyab',
-    age: 22,
-  },
-];
+// const data = [
+//   {
+//     image_url: 'https://test.ramshapos.com/uploads/img/1670671946_NOOR%202.png',
+//     category: {
+//       id: 1,
+//       name: 'MACHINE MADE CARPET',
+//       business_id: 1,
+//       short_code: null,
+//       parent_id: 0,
+//     },
+//     stock: 1, // Assuming this is derived from `enable_stock` or similar field
+//     price: null, // You may need to derive this from another field or calculation
+//     size: '400 CM WIDTH', // Assuming this is derived from `product_custom_field3`
+//     sku: '8904157600002',
+//     total_sales: null, // Assuming this needs to be fetched or calculated separately
+//     design: 'Construction - Plain Cut Pile', // Assuming this is from `product_description`
+//     sell_quantity: null, // Assuming this needs to be calculated or fetched
+//     sell_price: null, // Assuming this needs to be calculated or fetched
+//     subtotal: null, // Assuming this needs to be calculated or fetched
+//     sell_invoice_no: null, // Assuming this needs to be fetched or calculated
+//     unit_price: null, // Assuming this needs to be calculated or fetched
+//     tax: 'VAT 5%', // Assuming this is from `product_tax.name`
+//     tax_included_price: null, // Assuming this needs to be calculated or fetched
+//   },
+// ];
 
 const Reports = () => {
   const {
@@ -145,6 +144,8 @@ const Reports = () => {
     purchaseForecastReportDataMapper,
   } = useReportsMapper();
   const [activeHeader, setActiveHeader] = useState(false);
+  const [prodData, setprodData] = useState([]);
+  console.log(prodData);
   const [filterChips, setFilterChips] = useState([
     'India',
     'India',
@@ -155,33 +156,59 @@ const Reports = () => {
   ]);
   const { fetch } = useFetch();
   const { reportsParams } = useParams();
+  const productData = [];
 
   useEffect(() => {
     const loadData = async () => {
-      const prodData = await getRequest('/product', 'get', { per_page: 20 });
-      console.log(prodData);
-      prodData.data.forEach((prod) => {
-        data2.push(prod);
+      const prodData = await getRequest('/product', 'get');
+
+      // prodData.data.forEach((prod) => {
+      //   data2.push(prod);
+      // });
+      prodData.data.forEach((data, i) => {
+        productData.push({
+          image_url: data.image_url,
+          category: {
+            id: data.category_id,
+            name: data.category_name,
+            business_id: data.business_id,
+            short_code: null,
+            parent_id: 0,
+          },
+          stock: data.enable_stock,
+          price: null,
+          size: data.product_custom_field3,
+          sku: data.sku,
+          total_sales: null,
+          design: null,
+          sell_quantity: null,
+          sell_price: null,
+          subtotal: null,
+          sell_invoice_no: null,
+          unit_price: null,
+          tax: data.product_tax.name,
+          tax_included_price: null,
+        });
       });
+      console.log(productData);
+      setprodData(productData);
 
-      console.log(prodData);
-
-      if (reportsParams === import.meta.env.VITE_REPORT_ITEM_SALE) {
-        itemsSaleReportDataMapper(data);
-      } else if (reportsParams === import.meta.env.VITE_REPORT_INVENTORY) {
-        inventoryReportDataMapper(...data);
-      } else if (
-        reportsParams === import.meta.env.VITE_REPORT_PURCHASE_FORECAST
-      ) {
-        purchaseForecastReportDataMapper(...data);
-      } else if (
-        reportsParams === import.meta.env.VITE_REPORT_VITE_REPORT_DAILY_SALE
-      ) {
-        dailySaleReportDataMapper(...data);
-      }
+      // if (reportsParams === import.meta.env.VITE_REPORT_ITEM_SALE) {
+      //   itemsSaleReportDataMapper(data);
+      // } else if (reportsParams === import.meta.env.VITE_REPORT_INVENTORY) {
+      //   inventoryReportDataMapper(...data);
+      // } else if (
+      //   reportsParams === import.meta.env.VITE_REPORT_PURCHASE_FORECAST
+      // ) {
+      //   purchaseForecastReportDataMapper(...data);
+      // } else if (
+      //   reportsParams === import.meta.env.VITE_REPORT_VITE_REPORT_DAILY_SALE
+      // ) {
+      //   dailySaleReportDataMapper(...data);
+      // }
     };
     loadData();
-  }, [fetch, reportsParams]);
+  }, []);
 
   const deleteAllChips = () => {
     setFilterChips([]);
@@ -262,7 +289,7 @@ const Reports = () => {
             )}
           </div>
         </OptionsWrapper>
-        <DataTable columns={columns} data={data2}></DataTable>
+        <DataTable columns={columns} data={prodData}></DataTable>
         {/* <DataTableToDownload data={data} /> */}
       </div>
     </>
