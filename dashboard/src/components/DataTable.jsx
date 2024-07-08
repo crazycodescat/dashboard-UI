@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 const DataTable = ({ columns, data }) => {
+  console.log(data);
   return (
     <div className="overflow-x-auto data-table">
       <table className="min-w-full bg-white border border-gray-200">
@@ -27,7 +28,15 @@ const DataTable = ({ columns, data }) => {
                     key={colIndex}
                     className="border px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900"
                   >
-                    {row[column.accessor]}
+                    {column.image_url ? (
+                      <img
+                        className="w-1/4"
+                        src={row[column.accessor]}
+                        alt=""
+                      />
+                    ) : (
+                      row[column.accessor]
+                    )}
                   </td>
                 ))}
               </tr>

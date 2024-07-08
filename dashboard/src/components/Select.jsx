@@ -1,7 +1,13 @@
 /* eslint-disable react/prop-types */
-const Select = ({ id, classes, children }) => {
+const Select = ({ id, classes, children, frequency, handleChange }) => {
+  console.log(frequency)
   return (
-    <select id={id} className={classes}>
+    <select
+      value={frequency}
+      onChange={(e) => handleChange(e)}
+      id={id}
+      className={classes}
+    >
       {children}
     </select>
   );

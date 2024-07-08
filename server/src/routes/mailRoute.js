@@ -3,8 +3,8 @@ import { Router } from 'express';
 // MODULES
 import { mailer } from '../controller/mailerController.js';
 
-const router = Router();
+const mailRouter = Router();
 
-router.post('/reports', mailer);
+mailRouter.post('/reports', mailer);
 
-export default router;
+export default mailRouter;

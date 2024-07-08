@@ -23,6 +23,7 @@ export default {
         candlePurple: '#696bff',
         filtersHeader: '#1A1B28',
         button: '#5B60B9',
+        hoverBtn: '#6267b3',
       },
       gridTemplateColumns: {
         4: 'repeat(4, minmax(100px, 1fr))',

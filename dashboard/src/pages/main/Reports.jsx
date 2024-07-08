@@ -10,9 +10,11 @@ import DataTable from '../../components/DataTable';
 import useReportsMapper from '../../hooks/useReportsMapper';
 import Chips from '../../components/Chips';
 import DataTableToDownload from '../../components/DataTableToDownload';
+import { getRequest } from '../../fetch/request';
 
 // HOOKS
 import useFetch from '../../hooks/useFetch';
+import axios from 'axios';
 // import { useReportContext } from '../../hooks/useReportContext';
 
 const filterItems = [
@@ -86,15 +88,11 @@ const filterItems = [
 
 const image =
   'https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png';
-const employees = [
-  {
-    id: 1,
-    image,
-  },
-];
+const data2 = [];
 
 const columns = [
-  { accessor: 'image', header: 'Image', isTrue: true },
+  { accessor: 'image_url', header: 'Image', isTrue: true },
+  { accessor: 'category', header: 'Category', isTrue: true },
   { accessor: 'stock', header: 'Stock', isTrue: true },
   { accessor: 'price', header: 'Price', isTrue: true },
   { accessor: 'size', header: 'Size', isTrue: true },
@@ -160,11 +158,13 @@ const Reports = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const { data } = await fetch({
-        url: 'http://localhost:3000/data',
-        method: 'get',
+      const prodData = await getRequest('/product', 'get', { per_page: 20 });
+      console.log(prodData);
+      prodData.data.forEach((prod) => {
+        data2.push(prod);
       });
-      console.log(data);
+
+      console.log(prodData);
 
       if (reportsParams === import.meta.env.VITE_REPORT_ITEM_SALE) {
         itemsSaleReportDataMapper(data);
@@ -201,7 +201,9 @@ const Reports = () => {
     <>
       <div className="flex flex-col gap-8">
         <div className="text-3xl font-bold mt-12">ITEMS SALE</div>
+        {/* FORMAT OUTPUTS */}
         <FormatOutputs columns={columns} />
+
         <OptionsWrapper wrapperName="filters">
           <div className="grid grid-cols-4 gap-2 max-w-[1000px]">
             {filterItems.map((item, i) => {
@@ -260,8 +262,8 @@ const Reports = () => {
             )}
           </div>
         </OptionsWrapper>
-        <DataTable columns={columns} data={employees}></DataTable>
-        <DataTableToDownload data={data} />
+        <DataTable columns={columns} data={data2}></DataTable>
+        {/* <DataTableToDownload data={data} /> */}
       </div>
     </>
   );

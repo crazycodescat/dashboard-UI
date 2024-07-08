@@ -2,7 +2,7 @@ import nodeMailer from '../utils/nodeMailer.js';
 
 const mailer = async (req, res) => {
   const { email, data, columns } = req.body;
-
+  console.log('hello');
   // HTML content with inline CSS
   const htmlContent = `
    <h1 style="color: green;">Reports Details</h1>

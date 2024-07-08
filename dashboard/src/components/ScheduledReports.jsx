@@ -6,7 +6,15 @@ import Switch from './Switch';
 
 const ScheduledReports = () => {
   const [currentDateTime, setCurrentDateTime] = useState('');
+  const [isSwitch, setIsSwitch] = useState(false);
 
+  const switchHandler = () => {
+    setIsSwitch((prev) => !prev);
+  };
+  const [frequency, setFrequency] = useState('');
+  const handleChange = (e) => {
+    setFrequency(e.target.value);
+  };
   useEffect(() => {
     // Function to get current date and time in format YYYY-MM-DDTHH:MM
     const getCurrentDateTime = () => {
@@ -33,7 +41,11 @@ const ScheduledReports = () => {
             value={currentDateTime}
             onChange={(e) => setCurrentDateTime(e.target.value)}
           />
-          <Select classes="border border-gray-300 bg-button text-white text-xs font-medium uppercase rounded-md block w-[120px] px-2 border rounded-md text-gray-700 focus:outline-none">
+          <Select
+            frequency={frequency}
+            handleChange={handleChange}
+            classes="border border-gray-300 bg-button hover:bg-hoverBtn cursor-pointer text-white text-xs font-medium uppercase rounded-md block w-[120px] px-2 border rounded-md text-gray-700 focus:outline-none"
+          >
             <option className="bg-white text-black" value="yearly">
               Yearly
             </option>
@@ -50,14 +62,20 @@ const ScheduledReports = () => {
 
           {/* SEND NOW BUTTON */}
           <Button
-            classess="px-4 py-2 bg-button rounded-md text-white text-xs font-medium"
+            classess="px-4 py-2 bg-button hover:bg-hoverBtn rounded-md text-white text-xs font-medium"
             text="SEND NOW"
           />
+          {isSwitch && (
+            <Button
+              classess="px-4 py-2 bg-button hover:bg-hoverBtn rounded-md text-white text-xs font-medium"
+              text="SCHEDULE NOW"
+            />
+          )}
         </div>
       </div>
 
       <div className="flex gap-2 items-center">
-        <Switch />
+        <Switch isSwitch={isSwitch} switchHandler={switchHandler} />
         <p className="text-xs font-bold">Repeat Emails</p>
       </div>
     </div>

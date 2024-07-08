@@ -1,29 +1,40 @@
-// IMPORTS
-import { useState } from 'react';
+/* eslint-disable react/prop-types */
 
 // COMPONENTS
 import EmailChips from './EmailChips';
 import Button from './Button';
 
-const DirectReports = () => {
-  const [email, setEmail] = useState('');
-  const [enteredEmails, setEnteredEmails] = useState([]);
+const DirectReports = ({
+  deleteEmailHandler,
+  setEmailHandler,
+  emailError,
+  enteredEmails,
+  email,
+  setEmail,
+}) => {
+  // const [email, setEmail] = useState('');
+  // const [enteredEmails, setEnteredEmails] = useState([]);
+  // const [emailError, setEmailError] = useState(null);
 
-  const setEmailHandler = (e) => {
-    e.preventDefault();
+  // const setEmailHandler = (e) => {
+  //   e.preventDefault();
 
-    if (!email > 0) {
-      return;
-    }
+  //   if (!email > 0) {
+  //     return;
+  //   }
+  //   if (enteredEmails.includes(email)) {
+  //     setEmailError('Email already added');
+  //     return;
+  //   }
+  //   setEnteredEmails((prevEmails) => [...prevEmails, email]);
+  //   setEmail('');
+  //   setEmailError(null);
+  // };
 
-    setEnteredEmails((prevEmails) => [...prevEmails, email]);
-    setEmail('');
-  };
-
-  const deleteEmailHandler = (index) => {
-    const filteredEmails = enteredEmails.filter((email, idx) => idx !== index);
-    setEnteredEmails(filteredEmails);
-  };
+  // const deleteEmailHandler = (index) => {
+  //   const filteredEmails = enteredEmails.filter((email, idx) => idx !== index);
+  //   setEnteredEmails(filteredEmails);
+  // };
 
   return (
     <div className="flex flex-col gap-4 mt-8">
@@ -50,7 +61,9 @@ const DirectReports = () => {
               </div>
             </div>
           </form>
-
+          {emailError && (
+            <span className="text-xs text-red-600">{emailError}</span>
+          )}
           {/* EMAIL LISTS CHIPS */}
           <div className="flex gap-1 flex-wrap">
             {enteredEmails.length > 0 &&

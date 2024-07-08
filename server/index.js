@@ -3,7 +3,8 @@ import env from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 
-import router from './src/routes/mailRoute.js';
+import mailRouter from './src/routes/mailRoute.js';
+import schedulerRouter from './src/routes/scheduledMailRouter.js';
 
 const app = express();
 env.config();
@@ -16,7 +17,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/mail', router);
+app.use('/api/mail', mailRouter);
+app.use('/api/scheduleMail', schedulerRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on PORT ${process.env.PORT}`);

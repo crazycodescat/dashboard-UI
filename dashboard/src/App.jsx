@@ -1,14 +1,3 @@
-// import { useState } from 'react';
-// import { RiHomeSmileLine } from 'react-icons/ri';
-// import { MdChevronRight } from 'react-icons/md';
-// import { FaPaypal } from 'react-icons/fa';
-// import SideBarChips from './components/SideBarChips';
-// import ReportStrips from './components/ReportStrips';
-// import Candles from './components/Candles';
-// import SmallCard from './components/SmallCard';
-// import ProfitCandles from './components/ProfitCandles';
-// import Header from './components/header/Header';
-// import SideBar from './components/sideBar/SideBar';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Dashboard from './pages/main/Dashboard';
 import RootLayout from './pages/RootLayout';
@@ -19,6 +8,9 @@ import Ecommerce from './pages/main/Ecommerce';
 import Products from './pages/main/Products';
 import { ReportProvider } from './context/ReportContext';
 import { ToastContainer } from 'react-toastify';
+
+// PAGES
+import Login from './pages/main/Login';
 
 const router = createBrowserRouter([
   {
@@ -48,6 +40,10 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: '/login',
+    element: <Login />,
+  },
 ]);
 
 function App() {
@@ -60,28 +56,3 @@ function App() {
 }
 
 export default App;
-
-//  <>
-//       DASHBOARD UI
-//       <div className="relative">
-//         <Header />
-//         <SideBar />
-
-//         <SideBarChips LeftIcon={RiHomeSmileLine} RightIcon={MdChevronRight}>
-//           Dashboard
-//         </SideBarChips>
-//         <ReportStrips
-//           ReportIcon={FaPaypal}
-//           ReportValues={{
-//             valueType: 'Income',
-//             price: '$42,845',
-//           }}
-//           ReportAnalytics="+1.4k"
-//         ></ReportStrips>
-//         <Candles />
-//         <SmallCard />
-//         <ProfitCandles/>
-//       </div>
-//     </>
-
-// products , customer,

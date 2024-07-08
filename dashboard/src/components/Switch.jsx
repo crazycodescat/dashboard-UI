@@ -1,12 +1,5 @@
-import { useState } from 'react';
-
-const Switch = () => {
-  const [isSwitch, setIsSwitch] = useState(false);
-
-  const switchHandler = () => {
-    setIsSwitch((prev) => !prev);
-  };
-
+/* eslint-disable react/prop-types */
+const Switch = ({ isSwitch, switchHandler }) => {
   return (
     <button
       onClick={switchHandler}
