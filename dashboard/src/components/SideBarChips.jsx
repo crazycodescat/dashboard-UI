@@ -3,8 +3,8 @@ import { useState } from 'react';
 import SideBarSubMenu from './sideBar/SideBarSubMenu';
 
 const SideBarChips = ({
-  LeftIcon,
-  RightIcon,
+  leftIcon,
+  rightIcon,
   children,
   notificationBadge,
   subMenu,
@@ -19,7 +19,7 @@ const SideBarChips = ({
       <button onClick={sideBarSubMenuToggler}>
         <div className="flex items-center justify-between gap-2 py-2 text-sm w-full cursor-pointer">
           <div className="flex gap-3 items-center">
-            {LeftIcon}
+            {leftIcon}
             {children}
           </div>
           {notificationBadge && (
@@ -28,7 +28,7 @@ const SideBarChips = ({
             </div>
           )}
           <div className={`${open ? 'rotate-90' : 'rotate-0'} duration-300`}>
-            {RightIcon}
+            {rightIcon}
           </div>
         </div>
       </button>

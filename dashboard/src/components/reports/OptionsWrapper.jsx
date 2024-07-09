@@ -8,7 +8,7 @@ const OptionsWrapper = ({ children, wrapperName }) => {
     setOptionsOpen((prev) => !prev);
   };
   return (
-    <div className="flex items-start">
+    <div className="flex justify-end">
       <div className="flex flex-col gap-4 w-fit">
         <div className="flex gap-4">
           <h2 className="text-lg font-semibold uppercase w-fit">

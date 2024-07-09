@@ -11,12 +11,12 @@ import SideBarChips from '../SideBarChips';
 
 const SideBar = () => {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  const chevronRight = <MdChevronRight />;
+  // const chevronRight = <MdChevronRight />;
   const sideBarMenu = [
     {
       leftIcon: <GiArchiveRegister />,
       name: 'Reports',
-      rightIcon: chevronRight,
+      rightIcon: <MdChevronRight />,
       notificationBadge: false,
       path: '/reports/',
       subMenu: [
@@ -35,7 +35,7 @@ const SideBar = () => {
     {
       leftIcon: <GiArchiveRegister />,
       name: 'Products',
-      rightIcon: chevronRight,
+      rightIcon: <MdChevronRight />,
       notificationBadge: false,
       path: '/products',
       subMenu: [
@@ -54,7 +54,7 @@ const SideBar = () => {
     {
       leftIcon: <GiArchiveRegister />,
       name: 'Customers',
-      rightIcon: chevronRight,
+      rightIcon: <MdChevronRight />,
       notificationBadge: false,
       path: '/customers',
       subMenu: [
@@ -127,8 +127,8 @@ const SideBar = () => {
             return (
               <div key={i}>
                 <SideBarChips
-                  LeftIcon={chips.leftIcon}
-                  RightIcon={chips.rightIcon}
+                  leftIcon={chips.leftIcon}
+                  rightIcon={chips.rightIcon}
                   notificationBadge={false}
                   sideBarKey={i}
                   subMenu={chips.subMenu}

@@ -11,6 +11,8 @@ import useReportsMapper from '../../hooks/useReportsMapper';
 import Chips from '../../components/Chips';
 import DataTableToDownload from '../../components/DataTableToDownload';
 import { getRequest } from '../../fetch/request';
+import TablePagination from '../../components/reports/TablePagination';
+import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 
 // HOOKS
 import useFetch from '../../hooks/useFetch';
@@ -84,13 +86,10 @@ const filterItems = [
   },
 ];
 
-const image =
-  'https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png';
-const data2 = [];
-
+// reports table header columns
 const columns = [
   { accessor: 'image_url', header: 'Image', isTrue: true },
-  { accessor: 'category.name', header: 'Category', isTrue: true },
+  { accessor: 'category', header: 'Category', isTrue: true },
   { accessor: 'stock', header: 'Stock', isTrue: true },
   { accessor: 'price', header: 'Price', isTrue: true },
   { accessor: 'size', header: 'Size', isTrue: true },
@@ -110,42 +109,15 @@ const columns = [
   },
 ];
 
-// const data = [
-//   {
-//     image_url: 'https://test.ramshapos.com/uploads/img/1670671946_NOOR%202.png',
-//     category: {
-//       id: 1,
-//       name: 'MACHINE MADE CARPET',
-//       business_id: 1,
-//       short_code: null,
-//       parent_id: 0,
-//     },
-//     stock: 1, // Assuming this is derived from `enable_stock` or similar field
-//     price: null, // You may need to derive this from another field or calculation
-//     size: '400 CM WIDTH', // Assuming this is derived from `product_custom_field3`
-//     sku: '8904157600002',
-//     total_sales: null, // Assuming this needs to be fetched or calculated separately
-//     design: 'Construction - Plain Cut Pile', // Assuming this is from `product_description`
-//     sell_quantity: null, // Assuming this needs to be calculated or fetched
-//     sell_price: null, // Assuming this needs to be calculated or fetched
-//     subtotal: null, // Assuming this needs to be calculated or fetched
-//     sell_invoice_no: null, // Assuming this needs to be fetched or calculated
-//     unit_price: null, // Assuming this needs to be calculated or fetched
-//     tax: 'VAT 5%', // Assuming this is from `product_tax.name`
-//     tax_included_price: null, // Assuming this needs to be calculated or fetched
-//   },
-// ];
-
 const Reports = () => {
-  const {
-    itemsSaleReportDataMapper,
-    inventoryReportDataMapper,
-    dailySaleReportDataMapper,
-    purchaseForecastReportDataMapper,
-  } = useReportsMapper();
   const [activeHeader, setActiveHeader] = useState(false);
   const [prodData, setprodData] = useState([]);
-  console.log(prodData);
+  const [paginationLink, setPaginationLink] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const { reportsParams } = useParams();
+  const { fetch } = useFetch();
+  const productData = [];
+
   const [filterChips, setFilterChips] = useState([
     'India',
     'India',
@@ -154,61 +126,46 @@ const Reports = () => {
     'India',
     'India',
   ]);
-  const { fetch } = useFetch();
-  const { reportsParams } = useParams();
-  const productData = [];
 
   useEffect(() => {
     const loadData = async () => {
-      const prodData = await getRequest('/product', 'get');
-
-      // prodData.data.forEach((prod) => {
-      //   data2.push(prod);
-      // });
-      prodData.data.forEach((data, i) => {
-        productData.push({
-          image_url: data.image_url,
-          category: {
-            id: data.category_id,
-            name: data.category_name,
-            business_id: data.business_id,
-            short_code: null,
-            parent_id: 0,
-          },
-          stock: data.enable_stock,
-          price: null,
-          size: data.product_custom_field3,
-          sku: data.sku,
-          total_sales: null,
-          design: null,
-          sell_quantity: null,
-          sell_price: null,
-          subtotal: null,
-          sell_invoice_no: null,
-          unit_price: null,
-          tax: data.product_tax.name,
-          tax_included_price: null,
-        });
+      // Fetching product data from API endpoint '/product' and pushing it in the productData array[]
+      const prodData = await getRequest('/product', 'get', {
+        page: currentPage,
       });
-      console.log(productData);
-      setprodData(productData);
 
-      // if (reportsParams === import.meta.env.VITE_REPORT_ITEM_SALE) {
-      //   itemsSaleReportDataMapper(data);
-      // } else if (reportsParams === import.meta.env.VITE_REPORT_INVENTORY) {
-      //   inventoryReportDataMapper(...data);
-      // } else if (
-      //   reportsParams === import.meta.env.VITE_REPORT_PURCHASE_FORECAST
-      // ) {
-      //   purchaseForecastReportDataMapper(...data);
-      // } else if (
-      //   reportsParams === import.meta.env.VITE_REPORT_VITE_REPORT_DAILY_SALE
-      // ) {
-      //   dailySaleReportDataMapper(...data);
-      // }
+      console.log(prodData);
+
+      // Extract pagination links from response and set them in state
+      setPaginationLink({
+        prev: prodData.links.prev,
+        next: prodData.links.next,
+        last_page: prodData.meta.last_page,
+        from: prodData.meta.from,
+      });
+
+      const mappedData = prodData.data.map((data, i) => ({
+        image_url: data.image_url,
+        category: { name: data.category.name },
+        stock: data.enable_stock,
+        price: null,
+        size: data.product_custom_field3,
+        sku: data.sku,
+        total_sales: null,
+        design: null,
+        sell_quantity: null,
+        sell_price: null,
+        subtotal: null,
+        sell_invoice_no: null,
+        unit_price: null,
+        tax: data.product_tax.name,
+        tax_included_price: null,
+      }));
+      // setting productData in the prodData state
+      setprodData(mappedData);
     };
     loadData();
-  }, []);
+  }, [currentPage]);
 
   const deleteAllChips = () => {
     setFilterChips([]);
@@ -224,6 +181,17 @@ const Reports = () => {
   const activeHeaderHandler = (i) => {
     setActiveHeader(i);
   };
+
+  const nextPageHandler = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const prevPageHandler = () => {
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
   return (
     <>
       <div className="flex flex-col gap-8">
@@ -231,8 +199,8 @@ const Reports = () => {
         {/* FORMAT OUTPUTS */}
         <FormatOutputs columns={columns} />
 
-        <OptionsWrapper wrapperName="filters">
-          <div className="grid grid-cols-4 gap-2 max-w-[1000px]">
+        <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-4 gap-2 w-full">
             {filterItems.map((item, i) => {
               return (
                 <div onClick={() => activeHeaderHandler(i)} key={i}>
@@ -288,12 +256,83 @@ const Reports = () => {
               </button>
             )}
           </div>
-        </OptionsWrapper>
+        </div>
+
+        
         <DataTable columns={columns} data={prodData}></DataTable>
-        {/* <DataTableToDownload data={data} /> */}
+
+        {/* Pagination Section */}
+
+        <TablePagination>
+          <button
+            onClick={prevPageHandler}
+            className=" text-white p-2 flex gap-2 rounded-sm border border-solid border-gray-300"
+            disabled={!paginationLink.prev}
+          >
+            <FaChevronLeft />
+            <p>Previous</p>
+          </button>
+          <div className="flex gap-4">
+            <button
+              className={` ${
+                currentPage <= 1 ? 'hidden' : null
+              } w-6 h-6 rounded-full text-white`}
+            >
+              {currentPage - 1}
+            </button>
+            <button className="bg-white w-6 h-6 rounded-full text-black">
+              {currentPage}
+            </button>
+            <p>...</p>
+            <button>{paginationLink.last_page}</button>
+          </div>
+          <button
+            onClick={nextPageHandler}
+            className=" text-white p-2 flex gap-2 rounded-sm border border-solid border-gray-300"
+            disabled={!paginationLink.next}
+          >
+            <p>Next</p>
+            <FaChevronRight />
+          </button>
+        </TablePagination>
       </div>
     </>
   );
 };
 
 export default Reports;
+
+// <TablePagination>
+//   <button
+//     onClick={prevPageHandler}
+//     className="text-white p-2 flex gap-2 rounded-sm border border-solid border-gray-300"
+//     disabled={!paginationLink.prev}
+//   >
+//     <FaChevronLeft />
+//     <p>Previous</p>
+//   </button>
+
+//   <div className="flex gap-4 max-w-12 overflow-x-auto">
+//     {/* Generate page buttons dynamically */}
+//     {Array.from({ length: paginationLink.last_page }, (_, index) => (
+//       <button
+//         key={index + 1}
+//         onClick={() => handlePageChange(index + 1)}
+//         className={`bg-white w-6 h-6 rounded-full text-black ${
+//           currentPage === index + 1 ? 'bg-gray-300' : ''
+//         }`}
+//       >
+//         {index + 1}
+//       </button>
+//     ))}
+//   </div>
+
+//   <button
+//     onClick={nextPageHandler}
+//     className="text-white p-2 flex gap-2 rounded-sm border border-solid border-gray-300"
+//     disabled={!paginationLink.next}
+//   >
+//     <p>Next</p>
+//     <FaChevronRight />
+//   </button>
+// </TablePagination>;
