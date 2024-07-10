@@ -11,6 +11,7 @@ async function getRequest(path, method, params) {
     },
     params: params,
   };
+
   try {
     const data = await axios.request(config);
 

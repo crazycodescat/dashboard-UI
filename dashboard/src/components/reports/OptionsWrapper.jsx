@@ -9,12 +9,12 @@ const OptionsWrapper = ({ children, wrapperName }) => {
   };
   return (
     <div className="flex justify-end">
-      <div className="flex flex-col gap-4 w-fit">
-        <div className="flex gap-4">
+      <div className="flex flex-col gap-4 w-[387px]">
+        <div className="flex gap-4 justify-end">
           <h2 className="text-lg font-semibold uppercase w-fit">
             {wrapperName}
           </h2>
-          <div 
+          <div
             className="flex items-center justify-center bg-primary05 p-1 cursor-pointer"
             onClick={optionsToggler}
           >

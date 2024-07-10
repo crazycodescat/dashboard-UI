@@ -43,7 +43,8 @@ const data = [
   },
 ];
 
-const FormatOutputs = ({ columns }) => {
+const FormatOutputs = ({ columns, productData }) => {
+  console.log(productData && productData);
   const outputFormats = [
     {
       formatName: 'pdf',
@@ -99,7 +100,14 @@ const FormatOutputs = ({ columns }) => {
   ];
 
   const exportToPdf = () => {
-    const doc = new jsPDF();
+    const fontSize = 50; // Initial font size
+    const doc = new jsPDF({
+      orientation: 'l',
+      unit: 'mm',
+      format: [250, 297],
+    });
+    doc.setFontSize(fontSize);
+    doc.addImage;
     doc.autoTable({ html: '#dataTable' });
     doc.save('datatable.pdf');
   };

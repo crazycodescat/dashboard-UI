@@ -10,13 +10,15 @@ import DataTable from '../../components/DataTable';
 import useReportsMapper from '../../hooks/useReportsMapper';
 import Chips from '../../components/Chips';
 import DataTableToDownload from '../../components/DataTableToDownload';
-import { getRequest } from '../../fetch/request';
+import { getRequest } from '../../utils/request';
 import TablePagination from '../../components/reports/TablePagination';
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
-
+import PerPageItems from '../../components/reports/PerPageItems';
+import { getProductStocks } from '../../utils/getStocks';
 // HOOKS
 import useFetch from '../../hooks/useFetch';
 
+// Static filter items
 const filterItems = [
   {
     identifier: 'location',
@@ -86,7 +88,7 @@ const filterItems = [
   },
 ];
 
-// reports table header columns
+// Columns configuration for the reports table
 const columns = [
   { accessor: 'image_url', header: 'Image', isTrue: true },
   { accessor: 'category', header: 'Category', isTrue: true },
@@ -110,14 +112,16 @@ const columns = [
 ];
 
 const Reports = () => {
-  const [activeHeader, setActiveHeader] = useState(false);
-  const [prodData, setprodData] = useState([]);
-  const [paginationLink, setPaginationLink] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
-  const { reportsParams } = useParams();
-  const { fetch } = useFetch();
-  const productData = [];
+  // State variables
+  const [activeHeader, setActiveHeader] = useState(false); // State for active filter header
+  const [prodData, setprodData] = useState([]); // State for product data
+  const [paginationLink, setPaginationLink] = useState({}); // State for pagination links
+  const [currentPage, setCurrentPage] = useState(1); // State for current page number
+  const [perPage, setPerPage] = useState(10);
+  const { reportsParams } = useParams(); // Accessing URL parameters using React Router
+  const { fetch, error, loading } = useFetch(); // Custom fetch hook
 
+  // State for displaying selected filters as chips
   const [filterChips, setFilterChips] = useState([
     'India',
     'India',
@@ -128,49 +132,61 @@ const Reports = () => {
   ]);
 
   useEffect(() => {
+    // Function to load data when currentPage changes
     const loadData = async () => {
       // Fetching product data from API endpoint '/product' and pushing it in the productData array[]
-      const prodData = await getRequest('/product', 'get', {
+
+      const prodData = await fetch('/product', 'get', {
         page: currentPage,
+        per_page: perPage,
       });
 
-      console.log(prodData);
+      if (prodData) {
+        // Extract pagination links from response and set them in state
+        setPaginationLink({
+          prev: prodData.links.prev,
+          next: prodData.links.next,
+          last_page: prodData.meta.last_page,
+          from: prodData.meta.from,
+          total: prodData.meta.total,
+        });
 
-      // Extract pagination links from response and set them in state
-      setPaginationLink({
-        prev: prodData.links.prev,
-        next: prodData.links.next,
-        last_page: prodData.meta.last_page,
-        from: prodData.meta.from,
-      });
+        // Mapping fetched data to match columns configuration
+        const mappedData = prodData.data.map((data, i) => ({
+          image_url: data.image_url,
+          category: { name: data.category ? data.category.name : '' },
+          stock: getProductStocks(data.product_variations),
+          price: null,
+          size: data.product_custom_field3 ? data.product_custom_field3 : '',
+          sku: data.sku ? data.sku : '',
+          total_sales: null,
+          design: null,
+          sell_quantity: null,
+          sell_price: null,
+          subtotal: null,
+          sell_invoice_no: null,
+          unit_price: null,
+          tax:
+            data.product_tax !== null
+              ? data.product_tax.name
+              : 'Tax Info is Not Available',
+          tax_included_price: null,
+        }));
 
-      const mappedData = prodData.data.map((data, i) => ({
-        image_url: data.image_url,
-        category: { name: data.category.name },
-        stock: data.enable_stock,
-        price: null,
-        size: data.product_custom_field3,
-        sku: data.sku,
-        total_sales: null,
-        design: null,
-        sell_quantity: null,
-        sell_price: null,
-        subtotal: null,
-        sell_invoice_no: null,
-        unit_price: null,
-        tax: data.product_tax.name,
-        tax_included_price: null,
-      }));
-      // setting productData in the prodData state
-      setprodData(mappedData);
+        // Setting mapped data in the prodData state
+        setprodData(mappedData);
+      }
     };
+    // Calling loadData function when currentPage changes
     loadData();
-  }, [currentPage]);
+  }, [currentPage, perPage, fetch]); // Dependencies array
 
+  // Function to clear all selected filters
   const deleteAllChips = () => {
     setFilterChips([]);
   };
 
+  // Function to remove a specific filter chip
   const removeChipsHandler = (index) => {
     const filteredChips = filterChips.filter((chip, i) => {
       return i !== index;
@@ -178,29 +194,37 @@ const Reports = () => {
     setFilterChips(filteredChips);
   };
 
+  // Function to handle click on filter header
   const activeHeaderHandler = (i) => {
     setActiveHeader(i);
   };
 
+  // Function to handle next page click
   const nextPageHandler = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
+  // Function to handle previous page click
   const prevPageHandler = () => {
     setCurrentPage((prevPage) => prevPage - 1);
   };
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+
+  // Function to navigate to last page
+  const lastPageHandler = () => {
+    setCurrentPage(paginationLink.last_page);
   };
+
   return (
     <>
-      <div className="flex flex-col gap-8">
-        <div className="text-3xl font-bold mt-12">ITEMS SALE</div>
-        {/* FORMAT OUTPUTS */}
-        <FormatOutputs columns={columns} />
+      <div className="flex flex-col gap-2">
+        <div className="text-3xl font-bold ">ITEMS SALE</div>
+        {/* Component to format outputs based on columns configuration */}
+        <FormatOutputs columns={columns} productData={prodData} />
 
         <div className="flex flex-col gap-2">
-          <div className="grid grid-cols-4 gap-2 w-full">
+          <h2 className="text-lg font-semibold uppercase w-fit">Filters</h2>
+          <div className="flex flex-wrap gap-2 w-[900px]">
+            {/* Mapping over filterItems to display filter headers */}
             {filterItems.map((item, i) => {
               return (
                 <div onClick={() => activeHeaderHandler(i)} key={i}>
@@ -215,6 +239,7 @@ const Reports = () => {
                   >
                     <FiltersContent>
                       <ul className="rounded-md max-h-52 overflow-y-auto sidebar">
+                        {/* Mapping over filterContent to display filter items */}
                         {item.filterContent.map((content, i) => {
                           return (
                             <li
@@ -238,7 +263,8 @@ const Reports = () => {
               );
             })}
           </div>
-          <div className="grid grid-cols-chips  gap-2  justify-items-start">
+          {/* Displaying selected filters as chips */}
+          <div className="grid grid-cols-chips gap-2  justify-items-start">
             {filterChips.map((chip, idx) => (
               <Chips
                 key={idx}
@@ -247,6 +273,7 @@ const Reports = () => {
                 removeChipsHandler={removeChipsHandler}
               />
             ))}
+            {/* Button to clear all selected filters */}
             {!filterChips.length <= 0 && (
               <button
                 onClick={deleteAllChips}
@@ -258,12 +285,25 @@ const Reports = () => {
           </div>
         </div>
 
-        
-        <DataTable columns={columns} data={prodData}></DataTable>
+        {/* INPUT TO CHOOSE HOW MANY ITEMS
+            PER PAGE
+        */}
+        <PerPageItems
+          paginationLink={paginationLink}
+          perPage={perPage}
+          setPerPage={setPerPage}
+        />
+
+        {/* Component to display DataTable with columns and prodData */}
+        <DataTable
+          loading={loading}
+          columns={columns}
+          data={prodData}
+        ></DataTable>
 
         {/* Pagination Section */}
-
         <TablePagination>
+          {/* Button for previous page */}
           <button
             onClick={prevPageHandler}
             className=" text-white p-2 flex gap-2 rounded-sm border border-solid border-gray-300"
@@ -273,23 +313,52 @@ const Reports = () => {
             <p>Previous</p>
           </button>
           <div className="flex gap-4">
+            {/* Button to navigate to first page */}
             <button
+              onClick={() => setCurrentPage(1)}
+              className={`${
+                currentPage <= 1 ? 'hidden' : null
+              } w-fit h-fit p-1 rounded-full text-white`}
+            >
+              1
+            </button>
+            {/* Button to navigate to previous page */}
+            <button
+              onClick={() =>
+                setCurrentPage((prevCurrentPage) => prevCurrentPage - 1)
+              }
               className={` ${
                 currentPage <= 1 ? 'hidden' : null
-              } w-6 h-6 rounded-full text-white`}
+              } w-fit h-fit p-1 rounded-full text-white`}
             >
               {currentPage - 1}
             </button>
-            <button className="bg-white w-6 h-6 rounded-full text-black">
+            {/* Button to display current page */}
+            <button className="bg-white w-fit h-fit p-1 rounded-full text-black">
               {currentPage}
             </button>
-            <p>...</p>
-            <button>{paginationLink.last_page}</button>
+            <p
+              className={`${
+                paginationLink.last_page === currentPage ? 'hidden' : null
+              }`}
+            >
+              ...
+            </p>
+            {/* Button to navigate to last page */}
+            <button
+              className={`${
+                paginationLink.last_page === currentPage ? 'hidden' : ''
+              }`}
+              onClick={lastPageHandler}
+            >
+              {paginationLink.last_page}
+            </button>
           </div>
+          {/* Button for next page */}
           <button
             onClick={nextPageHandler}
             className=" text-white p-2 flex gap-2 rounded-sm border border-solid border-gray-300"
-            disabled={!paginationLink.next}
+            disabled={paginationLink.last_page === currentPage}
           >
             <p>Next</p>
             <FaChevronRight />
@@ -301,38 +370,3 @@ const Reports = () => {
 };
 
 export default Reports;
-
-// <TablePagination>
-//   <button
-//     onClick={prevPageHandler}
-//     className="text-white p-2 flex gap-2 rounded-sm border border-solid border-gray-300"
-//     disabled={!paginationLink.prev}
-//   >
-//     <FaChevronLeft />
-//     <p>Previous</p>
-//   </button>
-
-//   <div className="flex gap-4 max-w-12 overflow-x-auto">
-//     {/* Generate page buttons dynamically */}
-//     {Array.from({ length: paginationLink.last_page }, (_, index) => (
-//       <button
-//         key={index + 1}
-//         onClick={() => handlePageChange(index + 1)}
-//         className={`bg-white w-6 h-6 rounded-full text-black ${
-//           currentPage === index + 1 ? 'bg-gray-300' : ''
-//         }`}
-//       >
-//         {index + 1}
-//       </button>
-//     ))}
-//   </div>
-
-//   <button
-//     onClick={nextPageHandler}
-//     className="text-white p-2 flex gap-2 rounded-sm border border-solid border-gray-300"
-//     disabled={!paginationLink.next}
-//   >
-//     <p>Next</p>
-//     <FaChevronRight />
-//   </button>
-// </TablePagination>;
