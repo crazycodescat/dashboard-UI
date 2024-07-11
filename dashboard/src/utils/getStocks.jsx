@@ -1,5 +1,4 @@
-function getProductStocks(product_variations) {
-  // console.log(product_variations);
+function getProductStocks(product_variations, product_locations) {
   const prodVariations = [];
 
   product_variations.forEach((prodVariation) => {

@@ -155,7 +155,10 @@ const Reports = () => {
         const mappedData = prodData.data.map((data, i) => ({
           image_url: data.image_url,
           category: { name: data.category ? data.category.name : '' },
-          stock: getProductStocks(data.product_variations),
+          stock: getProductStocks(
+            data.product_variations,
+            data.product_locations
+          ),
           price: null,
           size: data.product_custom_field3 ? data.product_custom_field3 : '',
           sku: data.sku ? data.sku : '',
@@ -179,7 +182,7 @@ const Reports = () => {
     };
     // Calling loadData function when currentPage changes
     loadData();
-  }, [currentPage, perPage, fetch]); // Dependencies array
+  }, [currentPage, perPage, fetch, reportsParams]); // Dependencies array
 
   // Function to clear all selected filters
   const deleteAllChips = () => {
@@ -199,24 +202,9 @@ const Reports = () => {
     setActiveHeader(i);
   };
 
-  // Function to handle next page click
-  const nextPageHandler = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-  };
-
-  // Function to handle previous page click
-  const prevPageHandler = () => {
-    setCurrentPage((prevPage) => prevPage - 1);
-  };
-
-  // Function to navigate to last page
-  const lastPageHandler = () => {
-    setCurrentPage(paginationLink.last_page);
-  };
-
   return (
     <>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 h-full">
         <div className="text-3xl font-bold ">ITEMS SALE</div>
         {/* Component to format outputs based on columns configuration */}
         <FormatOutputs columns={columns} productData={prodData} />
@@ -299,71 +287,10 @@ const Reports = () => {
           loading={loading}
           columns={columns}
           data={prodData}
+          setCurrentPage={setCurrentPage}
+          paginationLink={paginationLink}
+          currentPage={currentPage}
         ></DataTable>
-
-        {/* Pagination Section */}
-        <TablePagination>
-          {/* Button for previous page */}
-          <button
-            onClick={prevPageHandler}
-            className=" text-white p-2 flex gap-2 rounded-sm border border-solid border-gray-300"
-            disabled={!paginationLink.prev}
-          >
-            <FaChevronLeft />
-            <p>Previous</p>
-          </button>
-          <div className="flex gap-4">
-            {/* Button to navigate to first page */}
-            <button
-              onClick={() => setCurrentPage(1)}
-              className={`${
-                currentPage <= 1 ? 'hidden' : null
-              } w-fit h-fit p-1 rounded-full text-white`}
-            >
-              1
-            </button>
-            {/* Button to navigate to previous page */}
-            <button
-              onClick={() =>
-                setCurrentPage((prevCurrentPage) => prevCurrentPage - 1)
-              }
-              className={` ${
-                currentPage <= 1 ? 'hidden' : null
-              } w-fit h-fit p-1 rounded-full text-white`}
-            >
-              {currentPage - 1}
-            </button>
-            {/* Button to display current page */}
-            <button className="bg-white w-fit h-fit p-1 rounded-full text-black">
-              {currentPage}
-            </button>
-            <p
-              className={`${
-                paginationLink.last_page === currentPage ? 'hidden' : null
-              }`}
-            >
-              ...
-            </p>
-            {/* Button to navigate to last page */}
-            <button
-              className={`${
-                paginationLink.last_page === currentPage ? 'hidden' : ''
-              }`}
-              onClick={lastPageHandler}
-            >
-              {paginationLink.last_page}
-            </button>
-          </div>
-          {/* Button for next page */}
-          <button
-            onClick={nextPageHandler}
-            className=" text-white p-2 flex gap-2 rounded-sm border border-solid border-gray-300"
-            disabled={paginationLink.last_page === currentPage}
-          >
-            <p>Next</p>
-            <FaChevronRight />
-          </button>
-        </TablePagination>
       </div>
     </>
   );
