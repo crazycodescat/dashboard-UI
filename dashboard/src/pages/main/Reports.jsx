@@ -155,10 +155,7 @@ const Reports = () => {
         const mappedData = prodData.data.map((data, i) => ({
           image_url: data.image_url,
           category: { name: data.category ? data.category.name : '' },
-          stock: getProductStocks(
-            data.product_variations,
-            data.product_locations
-          ),
+          stock: getProductStocks(data.product_variations),
           price: null,
           size: data.product_custom_field3 ? data.product_custom_field3 : '',
           sku: data.sku ? data.sku : '',

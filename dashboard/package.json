@@ -13,6 +13,7 @@
     "axios": "^1.7.2",
     "file-saver": "^2.0.5",
     "html-to-xlsx": "^3.0.0",
+    "image-thumbnail": "^1.0.15",
     "json-server": "^1.0.0-beta.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
