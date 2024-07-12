@@ -8,6 +8,7 @@ import Ecommerce from './pages/main/Ecommerce';
 import Products from './pages/main/Products';
 import { ReportProvider } from './context/ReportContext';
 import { ToastContainer } from 'react-toastify';
+import { LocationProvider } from './context/BusinessLocationContext';
 
 // PAGES
 import Login from './pages/main/Login';
@@ -48,10 +49,12 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <ReportProvider>
-      <ToastContainer />
-      <RouterProvider router={router} />
-    </ReportProvider>
+    <LocationProvider>
+      <ReportProvider>
+        <ToastContainer />
+        <RouterProvider router={router} />
+      </ReportProvider>
+    </LocationProvider>
   );
 }
 

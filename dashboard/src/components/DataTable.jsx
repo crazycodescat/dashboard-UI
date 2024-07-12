@@ -12,6 +12,7 @@ const DataTable = ({
   paginationLink,
   currentPage,
 }) => {
+  console.log(data && data);
   // Function to handle next page click
   const nextPageHandler = () => {
     setCurrentPage((prevPage) => prevPage + 1);
@@ -41,7 +42,7 @@ const DataTable = ({
                   {columns.map((column, index) => (
                     <th
                       key={index}
-                      className="px-6 py-3 text-center text-xs font-semibold text-gray-700 border border-solid border-gray-300"
+                      className="min-w-fit px-6 py-3 text-center text-xs font-semibold text-gray-700 border border-solid border-gray-300"
                     >
                       {column.header}
                     </th>
@@ -59,7 +60,7 @@ const DataTable = ({
                     {columns.map((column, colIndex) => (
                       <td
                         key={colIndex}
-                        className="px-2 text-start py-2 text-xs text-gray-700 border border-solid border-gray-300 vertical-alignment:"
+                        className="px-2 text-start py-2 text-xs text-gray-700 border border-solid border-gray-300"
                       >
                         {column.accessor === 'image_url' ? (
                           <Link
@@ -76,6 +77,21 @@ const DataTable = ({
                           </Link>
                         ) : column.accessor === 'category' ? (
                           row[column.accessor].name
+                        ) : column.accessor === 'stock' ? (
+                          <div className="flex justify-center items-center w-fit text-white min-w-[300px]">
+                            {row[column.accessor].map((stock, i) => (
+                              <p
+                                className={`${
+                                  i % 2 === 0
+                                    ? 'bg-purple-600'
+                                    : 'bg-orange-600'
+                                } p-1 uppercase`}
+                                key={i}
+                              >
+                                {stock}
+                              </p>
+                            ))}
+                          </div>
                         ) : (
                           row[column.accessor]
                         )}

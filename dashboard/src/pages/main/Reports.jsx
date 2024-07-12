@@ -1,20 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import FilterHeader from '../../components/reports/FilterHeader';
 import FormatOutputs from '../../components/reports/FormatOutputs';
-import OptionsWrapper from '../../components/reports/OptionsWrapper';
 import FiltersContent from '../../components/reports/FiltersContent';
 import DataTable from '../../components/DataTable';
-import useReportsMapper from '../../hooks/useReportsMapper';
 import Chips from '../../components/Chips';
-import DataTableToDownload from '../../components/DataTableToDownload';
-import { getRequest } from '../../utils/request';
-import TablePagination from '../../components/reports/TablePagination';
-import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import PerPageItems from '../../components/reports/PerPageItems';
-import { getProductStocks } from '../../utils/getStocks';
+// import { getProductStocks } from '../../utils/getStocks';
+import useProdDataMapper from '../../utils/useProdDataMapper';
+
 // HOOKS
 import useFetch from '../../hooks/useFetch';
 
@@ -114,12 +111,13 @@ const columns = [
 const Reports = () => {
   // State variables
   const [activeHeader, setActiveHeader] = useState(false); // State for active filter header
-  const [prodData, setprodData] = useState([]); // State for product data
+  const [prodData, setProdData] = useState([]); // State for product data
   const [paginationLink, setPaginationLink] = useState({}); // State for pagination links
   const [currentPage, setCurrentPage] = useState(1); // State for current page number
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(100);
   const { reportsParams } = useParams(); // Accessing URL parameters using React Router
   const { fetch, error, loading } = useFetch(); // Custom fetch hook
+  const { DataMapper } = useProdDataMapper();
 
   // State for displaying selected filters as chips
   const [filterChips, setFilterChips] = useState([
@@ -141,7 +139,7 @@ const Reports = () => {
         per_page: perPage,
       });
 
-      if (prodData) {
+      if (prodData.data.length > 0) {
         // Extract pagination links from response and set them in state
         setPaginationLink({
           prev: prodData.links.prev,
@@ -151,35 +149,14 @@ const Reports = () => {
           total: prodData.meta.total,
         });
 
-        // Mapping fetched data to match columns configuration
-        const mappedData = prodData.data.map((data, i) => ({
-          image_url: data.image_url,
-          category: { name: data.category ? data.category.name : '' },
-          stock: getProductStocks(data.product_variations),
-          price: null,
-          size: data.product_custom_field3 ? data.product_custom_field3 : '',
-          sku: data.sku ? data.sku : '',
-          total_sales: null,
-          design: null,
-          sell_quantity: null,
-          sell_price: null,
-          subtotal: null,
-          sell_invoice_no: null,
-          unit_price: null,
-          tax:
-            data.product_tax !== null
-              ? data.product_tax.name
-              : 'Tax Info is Not Available',
-          tax_included_price: null,
-        }));
-
+        const mappedData = DataMapper(prodData.data);
         // Setting mapped data in the prodData state
-        setprodData(mappedData);
+        setProdData(mappedData);
       }
     };
     // Calling loadData function when currentPage changes
     loadData();
-  }, [currentPage, perPage, fetch, reportsParams]); // Dependencies array
+  }, [currentPage, perPage, reportsParams]); // Dependencies array
 
   // Function to clear all selected filters
   const deleteAllChips = () => {
@@ -273,11 +250,11 @@ const Reports = () => {
         {/* INPUT TO CHOOSE HOW MANY ITEMS
             PER PAGE
         */}
-        <PerPageItems
+        {/* <PerPageItems
           paginationLink={paginationLink}
           perPage={perPage}
           setPerPage={setPerPage}
-        />
+        /> */}
 
         {/* Component to display DataTable with columns and prodData */}
         <DataTable

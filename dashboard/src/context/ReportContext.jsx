@@ -5,8 +5,8 @@ import { createContext, useReducer } from 'react';
 export const ReportContext = createContext();
 
 const ReportReducer = (state, action) => {
-  console.log(state);
-  console.log(action);
+  // console.log(state);
+  // console.log(action);
   switch (action.type) {
     case 'ADD_REPORT':
       return [...action.payload];
@@ -37,7 +37,7 @@ const initialState = [
 
 export const ReportProvider = ({ children }) => {
   const [state, dispatch] = useReducer(ReportReducer, initialState);
-  console.log(state);
+  // console.log(state);
   return (
     <ReportContext.Provider value={{ ...state, dispatch }}>
       {children}

@@ -22,7 +22,7 @@ const useFetch = () => {
       try {
         setLoading(true);
         const res = await axios.request(config);
-        console.log(res);
+        // console.log(res.data);
         setLoading(false);
         return res.data;
       } catch (error) {

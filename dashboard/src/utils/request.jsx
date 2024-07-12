@@ -14,7 +14,6 @@ async function getRequest(path, method, params) {
 
   try {
     const data = await axios.request(config);
-
     return data.data;
   } catch (error) {
     console.error(error);

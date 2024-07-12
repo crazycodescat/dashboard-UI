@@ -1,70 +1,73 @@
-/* eslint-disable no-unused-vars */
-import { getRequest } from '../utils/request';
+// /* eslint-disable no-unused-vars */
+// import { getRequest } from '../utils/request';
 
-async function getBusinessLocation() {
-  const res = await getRequest('/business-location', 'get');
-  const data = res && res.data;
+// async function getBusinessLocation() {
+//   // console.log('hello');
+//   const res = await getRequest('/business-location', 'get');
+//   const data = res && res.data;
 
-  const locationDetails = data.map((data) => {
-    return {
-      id: data.id,
-      business_id: data.business_id,
-      location_id: data.location_id,
-      name: data.name,
-    };
-  });
+//   const locationDetails = data.map((data) => {
+//     return {
+//       id: data.id,
+//       business_id: data.business_id,
+//       location_id: data.location_id,
+//       name: data.name,
+//     };
+//   });
 
-  return locationDetails;
-}
+//   return locationDetails;
+// }
 
-const locationDetails = getBusinessLocation();
-console.log(locationDetails);
+// // const locationDetails = await getBusinessLocation();
 
-async function getProductStocks(product_variations) {
-  const prodVariations = [];
+// async function getProductStocks(product_variations) {
+//   const prodVariations = [];
 
-  product_variations.forEach((prodVariation) => {
-    prodVariation.variations.forEach((variation) => {
-      variation.variation_location_details.forEach((varDetails) => {
-        locationDetails.forEach((lcDetail, idx) => {
-          if (varDetails.location_id === lcDetail.id) {
-            const [first, second] = getLocationNameAbbreviation(lcDetail.name);
-            const stock = trimDecimal(varDetails.qty_available);
-            const stockWithName = first + second + stock;
-            prodVariations.push(stockWithName);
-          }
-        });
-      });
-    });
-  });
-  return prodVariations;
-}
+//   const variationLocationDetails =
+//     product_variations[0].variations[0].variation_location_details;
 
-function getLocationNameAbbreviation(name) {
-  // Split the name based on whitespace
-  let parts = name.split(/\s+/);
+//   variationLocationDetails.forEach((varLocaDetail, i) => {
+//     locationDetails.forEach((locationDetail) => {
+//       if (varLocaDetail.location_id === locationDetail.id) {
+//         console.log(varLocaDetail.location_id, locationDetail.id);
+//         const [first, second] = getLocationNameAbbreviation(
+//           locationDetail.name
+//         );
+//         const stock = trimDecimal(varLocaDetail.qty_available);
+//         const stockWithName = `${first}  ${second}  ${stock}`;
+//         console.log(stockWithName);
+//         return stockWithName;
+//       }
+//     });
+//   });
+//   return null;
+// }
 
-  // Initialize variables to store abbreviations
-  let firstAbbreviation = '';
-  let secondAbbreviation = '';
+// function getLocationNameAbbreviation(name) {
+//   // Split the name based on whitespace
+//   let parts = name.split(/\s+/);
 
-  if (parts.length >= 2) {
-    // Take the first part and get the first 3 letters (or fewer if the name is shorter)
-    firstAbbreviation = parts[0].substring(0, 3).toLowerCase(); // Using toLowerCase to match the output 'cit'
+//   // Initialize variables to store abbreviations
+//   let firstAbbreviation = '';
+//   let secondAbbreviation = '';
 
-    // Take the part at index 1 (second part) and get the first 3 letters (or fewer if the name is shorter)
-    secondAbbreviation = parts[1].substring(0, 3).toLowerCase(); // Using toLowerCase to match the output 'cen'
-  }
+//   if (parts.length >= 2) {
+//     // Take the first part and get the first 3 letters (or fewer if the name is shorter)
+//     firstAbbreviation = parts[0].substring(0, 3).toLowerCase(); // Using toLowerCase to match the output 'cit'
 
-  return [firstAbbreviation, secondAbbreviation];
-}
+//     // Take the part at index 1 (second part) and get the first 3 letters (or fewer if the name is shorter)
+//     secondAbbreviation = parts[1].substring(0, 3).toLowerCase(); // Using toLowerCase to match the output 'cen'
+//   }
 
-function trimDecimal(numberString) {
-  // Split the string based on the decimal point
-  const parts = numberString.split('.');
+//   return [firstAbbreviation, secondAbbreviation];
+// }
 
-  // Return the part before the decimal point
-  return parts[0];
-}
+// function trimDecimal(numberString) {
+//   // Split the string based on the decimal point
+//   const parts = numberString.split('.');
 
-export { getProductStocks };
+//   // Return the part before the decimal point
+//   return parts[0];
+// }
+
+// export { getProductStocks };
