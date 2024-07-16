@@ -6,7 +6,6 @@ const useProdDataMapper = () => {
 
   const DataMapper = (prodData) => {
     // Mapping fetched data to match columns configuration
-    // console.log(prodData);
     const mappedData = prodData.map((data) => ({
       image_url: data.image_url,
       category: { name: data.category ? data.category.name : '' },
@@ -15,7 +14,7 @@ const useProdDataMapper = () => {
       size: data.product_custom_field3 ? data.product_custom_field3 : '',
       sku: data.sku ? data.sku : '',
       total_sales: null,
-      design: null,
+      design: data.name,
       sell_quantity: null,
       sell_price: null,
       subtotal: null,
@@ -27,6 +26,7 @@ const useProdDataMapper = () => {
           : 'Tax Info is Not Available',
       tax_included_price: null,
     }));
+
     return mappedData;
   };
   return { DataMapper };

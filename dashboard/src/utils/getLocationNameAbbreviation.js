@@ -1,5 +1,4 @@
 function getLocationNameAbbreviation(name) {
-  console.log('hello');
   // Split the name based on whitespace
   let parts = name.split(/\s+/);
 

@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import Loader from '../components/Loader';
 import TablePagination from '../components/reports/TablePagination';
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
+import { v4 as uuidv4 } from 'uuid';
+import { useState } from 'react';
 
 /* eslint-disable react/prop-types */
 const DataTable = ({
@@ -12,7 +14,9 @@ const DataTable = ({
   paginationLink,
   currentPage,
 }) => {
-  console.log(data && data);
+  const [toolTipIndex, setToolTipIndex] = useState();
+  const [toolTipData, setToolTipData] = useState([]);
+  // console.log(data && data);
   // Function to handle next page click
   const nextPageHandler = () => {
     setCurrentPage((prevPage) => prevPage + 1);
@@ -27,6 +31,21 @@ const DataTable = ({
   const lastPageHandler = () => {
     setCurrentPage(paginationLink.last_page);
   };
+
+  const toolTipInitializer = (rowIndex) => {
+    const stock = data[rowIndex].stock;
+    const locationName = stock.map((stock) => {
+      return stock.locationName;
+    });
+    setToolTipIndex(rowIndex);
+    setToolTipData(locationName);
+  };
+
+  const removeToolTipHandler = () => {
+    setToolTipIndex('');
+    setToolTipData([]);
+  };
+
   return (
     <>
       {loading ? (
@@ -37,7 +56,7 @@ const DataTable = ({
         <div>
           <div className="overflow-y-auto max-h-[500px] min-h-[500px]">
             <table id="dataTable" className="w-full">
-              <thead>
+              <thead className=" sticky top-0 z-10">
                 <tr className="bg-gray-100">
                   {columns.map((column, index) => (
                     <th
@@ -60,7 +79,7 @@ const DataTable = ({
                     {columns.map((column, colIndex) => (
                       <td
                         key={colIndex}
-                        className="px-2 text-start py-2 text-xs text-gray-700 border border-solid border-gray-300"
+                        className="relative px-2  text-start py-2 text-xs text-gray-700 border border-solid border-gray-300"
                       >
                         {column.accessor === 'image_url' ? (
                           <Link
@@ -70,7 +89,7 @@ const DataTable = ({
                             className=""
                           >
                             <img
-                              className="inline-block w-8"
+                              className="w-12"
                               src={row[column.accessor]}
                               alt=""
                             />
@@ -78,20 +97,50 @@ const DataTable = ({
                         ) : column.accessor === 'category' ? (
                           row[column.accessor].name
                         ) : column.accessor === 'stock' ? (
-                          <div className="flex justify-center items-center w-fit text-white min-w-[300px]">
-                            {row[column.accessor].map((stock, i) => (
-                              <p
-                                className={`${
-                                  i % 2 === 0
-                                    ? 'bg-purple-600'
-                                    : 'bg-orange-600'
-                                } p-1 uppercase`}
-                                key={i}
-                              >
-                                {stock}
-                              </p>
-                            ))}
-                          </div>
+                          row[column.accessor] === 'No Stock' ? (
+                            <p className="text-black">{row[column.accessor]}</p>
+                          ) : (
+                            <div
+                              onMouseEnter={() => toolTipInitializer(rowIndex)}
+                              onMouseLeave={removeToolTipHandler}
+                              className="flex flex-col items-center text-white relative"
+                            >
+                              {row[column.accessor] === 'No Stock' ? (
+                                <p className="text-black">
+                                  {row[column.accessor]}
+                                </p>
+                              ) : (
+                                row[column.accessor].map((stock, i) => (
+                                  <>
+                                    <p
+                                      className={`${
+                                        i % 2 === 0
+                                          ? 'bg-purple-600'
+                                          : 'bg-orange-600'
+                                      } p-1 uppercase text-center w-full`}
+                                      key={uuidv4()}
+                                    >
+                                      {stock.stockWithName}
+                                    </p>
+                                  </>
+                                ))
+                              )}
+                              {toolTipIndex === rowIndex && (
+                                <ul className="flex flex-wrap divide-y divide-white justify-center gap-2 p-1 absolute top-0 left-[68px] bg-neutral-800 min-h-full min-w-[150px] z-10 ">
+                                  {toolTipData.map((locationName) => {
+                                    return (
+                                      <li
+                                        className="text-white w-fit"
+                                        key={uuidv4()}
+                                      >
+                                        {locationName}
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              )}
+                            </div>
+                          )
                         ) : (
                           row[column.accessor]
                         )}

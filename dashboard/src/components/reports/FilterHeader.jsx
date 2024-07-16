@@ -16,27 +16,28 @@ const FilterHeader = ({
   };
 
   // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target) &&
-        !event.target.closest('.sidebar')
-      ) {
-        setOpen(false);
-      }
+  // useEffect(() => {
+  //   const handleOutsideClick = (event) => {
+  //     console.log(event.target.innerHTML);
+  //     if (
+  //       dropdownRef.current &&
+  //       !dropdownRef.current.contains(event.target) &&
+  //       !event.target.closest('.sidebar')
+  //     ) {
+  //       setOpen(false);
+  //     }
 
-      if (event.target.closest('.filter-content')) {
-        setOpen(false);
-      }
-    };
+  //     if (event.target.closest('.filter-content')) {
+  //       setOpen(false);
+  //     }
+  //   };
 
-    document.addEventListener('mousedown', handleOutsideClick);
+  //   window.document.addEventListener('mousedown', handleOutsideClick);
 
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleOutsideClick);
+  //   };
+  // }, []);
 
   return (
     <>

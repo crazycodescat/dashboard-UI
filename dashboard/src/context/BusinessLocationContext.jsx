@@ -11,13 +11,15 @@ const LocationProvider = ({ children }) => {
     const loadLocations = async () => {
       const res = await getRequest('/business-location', 'get');
       const data = res && res.data;
-
+      console.log(data);
       const locationDetails = data.map((data) => {
         return {
           id: data.id,
           business_id: data.business_id,
           location_id: data.location_id,
           name: data.name,
+          city: data.city,
+          country: data.country,
         };
       });
       setLocations(locationDetails);

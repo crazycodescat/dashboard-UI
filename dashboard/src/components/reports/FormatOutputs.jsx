@@ -105,6 +105,7 @@ const FormatOutputs = ({ columns, productData }) => {
       orientation: 'l',
       unit: 'mm',
       format: [250, 297],
+      compress: true,
     });
     doc.setFontSize(fontSize);
     doc.addImage;
