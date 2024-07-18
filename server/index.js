@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 
 import mailRouter from './src/routes/mailRoute.js';
 import schedulerRouter from './src/routes/scheduledMailRouter.js';
+import sellsRouter from './src/routes/sellsRoutes.js';
 
 const app = express();
 env.config();
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 
 app.use('/api/mail', mailRouter);
 app.use('/api/scheduleMail', schedulerRouter);
+app.use('/api/getSellsData', sellsRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on PORT ${process.env.PORT}`);

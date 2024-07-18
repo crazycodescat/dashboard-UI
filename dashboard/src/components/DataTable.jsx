@@ -98,7 +98,7 @@ const DataTable = ({
                           row[column.accessor].name
                         ) : column.accessor === 'stock' ? (
                           row[column.accessor] === 'No Stock' ? (
-                            <p className="text-black">{row[column.accessor]}</p>
+                            <p className="text-red-700 font-semibold">{row[column.accessor]}</p>
                           ) : (
                             <div
                               onMouseEnter={() => toolTipInitializer(rowIndex)}

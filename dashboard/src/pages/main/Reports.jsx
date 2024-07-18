@@ -43,6 +43,7 @@ const Reports = () => {
   const [currentPage, setCurrentPage] = useState(1); // State for current page number
   const [perPage, setPerPage] = useState(10);
   const [locationId, setLocationId] = useState();
+  const [categoryId, setCategoryId] = useState();
   const { reportsParams } = useParams(); // Accessing URL parameters using React Router
   const { fetch, loading } = useFetch(); // Custom fetch hook
   const { DataMapper } = useProdDataMapper();
@@ -54,7 +55,9 @@ const Reports = () => {
     const prodData = await fetch('/product', 'get', {
       page: currentPage,
       per_page: perPage,
-      location_id: params.location_id,
+      // location_id: params.location_id,
+      // category_id: params.category_id,
+      ...params, // Merge with existing params
     });
 
     if (prodData.data.length > 0) {
@@ -70,7 +73,14 @@ const Reports = () => {
       const mappedData = DataMapper(prodData.data);
       // Setting mapped data in the prodData state
       setProdData(mappedData);
-      setLocationId(params.location_id);
+      if (params.location_id) {
+        // console.log('location');
+        setLocationId(params.location_id);
+      }
+      if (params.category_id) {
+        // console.log('category');
+        setCategoryId(params.category_id);
+      }
     }
   };
 
@@ -82,6 +92,7 @@ const Reports = () => {
         page: currentPage,
         per_page: perPage,
         location_id: locationId,
+        category_id: categoryId,
       });
 
       if (prodData.data.length > 0) {
@@ -110,7 +121,13 @@ const Reports = () => {
         {/* Component to format outputs based on columns configuration */}
         <FormatOutputs columns={columns} productData={prodData} />
 
-        <Filters loadData={loadData} />
+        <Filters
+          loadData={loadData}
+          setLocationId={setLocationId}
+          setCategoryId={setCategoryId}
+          locationId={locationId}
+          categoryId={categoryId}
+        />
 
         {/* INPUT TO CHOOSE HOW MANY ITEMS
             PER PAGE
